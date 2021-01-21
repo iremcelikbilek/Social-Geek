@@ -10,133 +10,40 @@ import 'package:social_geek/models/user_model.dart';
 import 'package:social_geek/utils/error_exception.dart';
 import 'package:social_geek/view_models/user_view_model.dart';
 import 'package:social_geek/views/auth/login_page.dart';
+import 'package:social_geek/views/landing_page.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
+  @override
+  _SignUpScreenState createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _formKey = GlobalKey<FormState>();
+  String _email, _password;
+
+
   @override
   Widget build(BuildContext context) {
     final _userViewModel = Provider.of<UserViewModel>(context);
     if (_userViewModel.userModel != null) {
       Future.delayed(Duration(milliseconds: 1), () {
-        Navigator.of(context).popUntil(ModalRoute.withName("/"));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LandingPage()));
       });
     }
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: (_userViewModel.viewState == ViewState.IDLE)
-          ? Body()
+          ? buildBody()
           : Center(
               child: CircularProgressIndicator(),
             ),
     );
   }
-}
 
-class Body extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
-  String _email, _password;
-  @override
-  Widget build(BuildContext context) {
+  Widget buildBody(){
+    Size size = MediaQuery.of(context).size;
     final _userViewModel = Provider.of<UserViewModel>(context);
-    Size size = MediaQuery.of(context).size;
-    return Background(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: size.height * 0.03),
-            Image.asset(
-              "assets/images/signup.png",
-              height: size.height * 0.35,
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  RoundedInputField(
-                    errorText: (_userViewModel.emailErrorMessage != null)
-                        ? _userViewModel.emailErrorMessage
-                        : null,
-                    hintText: "Your Email",
-                    onSaved: (value) {
-                      _email = value;
-                    },
-                  ),
-                  RoundedPasswordField(
-                    errorText: (_userViewModel.passwordErrorMessage != null)
-                        ? _userViewModel.passwordErrorMessage
-                        : null,
-                    onSaved: (value) {
-                      _password = value;
-                    },
-                  ),
-                ],
-              ),
-            ),
-            RoundedButton(
-              text: "SIGNUP",
-              press: () => _formSubmit(context),
-            ),
-            SizedBox(height: size.height * 0.03),
-            AlreadyHaveAnAccountCheck(
-              login: false,
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return LoginScreen();
-                    },
-                  ),
-                );
-              },
-            ),
-            OrDivider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SocalIcon(
-                  iconSrc: "assets/images/google-plus.png",
-                  press: () => _signInWithGoogle(context),
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _formSubmit(BuildContext context) async{
-    _formKey.currentState.save();
-    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    try {
-      UserModel _userModel =
-          await userViewModel.createUserWithEmailPassword(_email, _password);
-      if (_userModel != null)
-        debugPrint(
-            "Email şifre ile  oluşturulan user : ${_userModel.toString()}");
-    } on FirebaseAuthException catch (e) {
-      print("For submit create metodunda HATA :" + Errors.showError(e.code));
-      userViewModel.emailErrorMessage = Errors.showError(e.code);
-    }
-  }
-
-  void _signInWithGoogle(BuildContext context) async{
-    final _userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    UserModel _user = await _userViewModel.signInWithGoogle();
-    if(_user != null) debugPrint("Oturum Açan Google User: ${_user.userID}");
-  }
-}
-
-class Background extends StatelessWidget {
-  final Widget child;
-  const Background({
-    Key key,
-    @required this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Container(
       height: size.height,
       width: double.infinity,
@@ -160,16 +67,99 @@ class Background extends StatelessWidget {
               width: size.width * 0.25,
             ),
           ),
-          child,
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: size.height * 0.03),
+                Image.asset(
+                  "assets/images/signup.png",
+                  height: size.height * 0.35,
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      RoundedInputField(
+                        errorText: (_userViewModel.emailErrorMessage != null)
+                            ? _userViewModel.emailErrorMessage
+                            : null,
+                        hintText: "Your Email",
+                        onSaved: (value) {
+                          _email = value;
+                        },
+                      ),
+                      RoundedPasswordField(
+                        errorText: (_userViewModel.passwordErrorMessage != null)
+                            ? _userViewModel.passwordErrorMessage
+                            : null,
+                        onSaved: (value) {
+                          _password = value;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                RoundedButton(
+                  text: "SIGNUP",
+                  press: () => _formSubmit(context),
+                ),
+                SizedBox(height: size.height * 0.03),
+                AlreadyHaveAnAccountCheck(
+                  login: false,
+                  press: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return LoginScreen();
+                        },
+                      ),
+                    );
+                  },
+                ),
+                orDivider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    socialIcon(
+                      iconSrc: "assets/images/google-plus.png",
+                      press: () => _signInWithGoogle(context),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
-  }
-}
 
-class OrDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  }
+
+  Widget socialIcon({String iconSrc, Function press}){
+    return GestureDetector(
+      onTap: press,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: kPrimaryLightColor,
+          ),
+          shape: BoxShape.circle,
+        ),
+        child: Image.asset(
+          iconSrc,
+          height: 20,
+          width: 20,
+        ),
+      ),
+    );
+  }
+
+  Widget orDivider(){
     Size size = MediaQuery.of(context).size;
     return Container(
       margin: EdgeInsets.symmetric(vertical: size.height * 0.02),
@@ -201,37 +191,28 @@ class OrDivider extends StatelessWidget {
       ),
     );
   }
-}
 
-class SocalIcon extends StatelessWidget {
-  final String iconSrc;
-  final Function press;
-  const SocalIcon({
-    Key key,
-    this.iconSrc,
-    this.press,
-  }) : super(key: key);
+  void _formSubmit(BuildContext context) async{
+    _formKey.currentState.save();
+    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
+    try {
+      UserModel _userModel =
+      await userViewModel.createUserWithEmailPassword(_email, _password);
+      if (_userModel != null)
+        debugPrint(
+            "Email şifre ile  oluşturulan user : ${_userModel.toString()}");
+    } on FirebaseAuthException catch (e) {
+      print("For submit create metodunda HATA :" + Errors.showError(e.code));
+      userViewModel.emailErrorMessage = Errors.showError(e.code);
+    }
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: press,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          border: Border.all(
-            width: 2,
-            color: kPrimaryLightColor,
-          ),
-          shape: BoxShape.circle,
-        ),
-        child: Image.asset(
-          iconSrc,
-          height: 20,
-          width: 20,
-        ),
-      ),
-    );
+  void _signInWithGoogle(BuildContext context) async{
+    final _userViewModel = Provider.of<UserViewModel>(context, listen: false);
+    UserModel _user = await _userViewModel.signInWithGoogle();
+    if(_user != null) debugPrint("Oturum Açan Google User: ${_user.userID}");
   }
 }
+
+
+

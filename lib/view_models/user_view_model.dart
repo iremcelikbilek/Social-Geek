@@ -1,8 +1,11 @@
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
 import 'package:social_geek/locator.dart';
+import 'package:social_geek/models/blog.dart';
+import 'package:social_geek/models/chat.dart';
+import 'package:social_geek/models/conversation.dart';
+import 'package:social_geek/models/educator.dart';
 import 'package:social_geek/models/user_model.dart';
 import 'package:social_geek/repository/user_repository.dart';
 import 'package:social_geek/services/auth/auth_base.dart';
@@ -15,6 +18,8 @@ class UserViewModel with ChangeNotifier implements AuthBase{
   UserRepository _userRepository = locator<UserRepository>();
   UserModel _userModel;
   String _emailErrorMessage, _passwordErrorMessage;
+  String _aboutMe;
+
 
   get passwordErrorMessage => _passwordErrorMessage;
 
@@ -145,8 +150,100 @@ class UserViewModel with ChangeNotifier implements AuthBase{
 
   Future<bool> updateUserName(String userID, String newUserName) async {
     var result = await _userRepository.updateUserName(userID, newUserName);
-    if(result) _userModel.userName = newUserName;
+    if(result) userModel.userName = newUserName;
     return result;
   }
 
+  Future<bool> updateAboutMe(String userID, String aboutMe) async {
+    var result = await _userRepository.updateAboutMe(userID, aboutMe);
+    if(result) userModel.aboutMe = aboutMe;
+    return result;
+  }
+
+  Future<String> uploadFile(String userID, String fileType, File fileToUpload) async{
+    var downloadLink = await _userRepository.uploadFile(userID, fileType, fileToUpload);
+    userModel.profileURL = downloadLink;
+    return downloadLink;
+  }
+
+  Future<List<UserModel>> getAllUsers() async{
+    var allUsersList = await _userRepository.getAllUsers();
+    return allUsersList;
+  }
+
+  Future<UserModel> getUser(String userID) async{
+    var user = await _userRepository.getUser(userID);
+    return user;
+  }
+
+  Stream<List<Chat>> getChat(String currentUserID, String typedUserID) {
+    return _userRepository.getChat(currentUserID, typedUserID);
+  }
+
+  Future<bool> saveMessage(Chat messageToBeSaved, UserModel typedUser,currentUser) async{
+    return await  _userRepository.saveMessage(messageToBeSaved,typedUser,currentUser);
+  }
+
+  Stream<List<Conversation>> getAllConversation(String userID) {
+    return _userRepository.getAllConversations(userID);
+  }
+
+  Future<List<UserModel>> getUsersWithPagination(UserModel theLastUserToGet, int elementToBeGet) async{
+    return await _userRepository.getUsersWithPagination(theLastUserToGet, elementToBeGet);
+  }
+
+  /// TAKİP İŞLEMLERİ
+
+  Stream<int> getFollowsNumber(UserModel userMe){
+    return _userRepository.getFollowsNumber(userMe);
+  }
+
+  Stream<int> getFollowersNumber(UserModel userMe){
+    return _userRepository.getFollowersNumber(userMe);
+  }
+
+  Future<bool> checkFollow(UserModel userMe, UserModel otherUser) async{
+    return await _userRepository.checkFollow(userMe, otherUser);
+  }
+
+  Future<bool> saveFollows(UserModel userMe, UserModel otherUser) async{
+    return await _userRepository.saveFollows(userMe, otherUser);
+  }
+
+  Future<bool> saveUnfollow(UserModel userMe, UserModel otherUser) async{
+    return await _userRepository.saveUnfollow(userMe, otherUser);
+  }
+
+  Stream<List<UserModel>> getFollows(UserModel userMe) {
+    return _userRepository.getFollows(userMe);
+  }
+
+  Stream<List<UserModel>> getFollowers(UserModel userMe) {
+    return _userRepository.getFollowers(userMe);
+  }
+
+  /// BLOG İŞLEMLERİ
+  Future<bool> saveBlogPost(UserModel userModel, Blog blogPost) async{
+    return await _userRepository.saveBlogPost(userModel, blogPost);
+  }
+
+  Stream<List<Blog>> getAllBlogPost(){
+    return _userRepository.getAllBlogPost();
+  }
+
+  Stream<List<Blog>> getMyBlog(UserModel user){
+    return _userRepository.getMyBlog(user);
+  }
+
+  Future<List<Blog>> getBlogWithPagination(Blog theLastBlogToGet, int elementToBeGet) async {
+    return await getBlogWithPagination(theLastBlogToGet, elementToBeGet);
+  }
+
+  Future<bool> saveEducator(String subject, UserModel educator) async{
+    return await _userRepository.saveEducator(subject, educator);
+  }
+
+  Stream<List<Educator>> getEducators(String subject) {
+    return _userRepository.getEducators(subject);
+  }
 }

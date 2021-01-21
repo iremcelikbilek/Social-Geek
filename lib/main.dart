@@ -5,8 +5,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:social_geek/locator.dart';
 import 'package:social_geek/view_models/user_view_model.dart';
-import 'package:social_geek/views/auth/login_page.dart';
-import 'package:social_geek/views/auth/welcome_page.dart';
+import 'constant.dart';
+import 'file:///C:/flutter_uygulamalar/social_geek/lib/views/app/profile/profile_page.dart';
 import 'package:social_geek/views/landing_page.dart';
 
 void main() async{
@@ -25,40 +25,22 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Color.fromRGBO(108, 99, 255, 1.0),
+          brightness: Brightness.dark,
+          //primaryColor: ,
+          accentColor: secondColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home:LandingPage(),
+        home:AnimatedSplashScreen(
+            splashIconSize: 200,
+            pageTransitionType: PageTransitionType.fade,
+            backgroundColor: backgroundColor,
+            splashTransition: SplashTransition.fadeTransition,
+            splash: Image.asset("assets/images/social_geek_logo.png"),
+            nextScreen: LandingPage()),
       ),
     );
   }
 }
 
-/*AnimatedSplashScreen(
-          splashIconSize: 200,
-          pageTransitionType: PageTransitionType.fade,
-          backgroundColor: Color.fromRGBO(140,135,219, 1),
-          splashTransition: SplashTransition.fadeTransition,
-          splash: Image.asset("assets/images/social_geek_logo.png"),
-          nextScreen: LoginScreen(),
-        ),*/
 
-
-
-/*Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color.fromRGBO(108, 99, 255, 1),
-                Color.fromRGBO(255, 103, 160, 1),
-                Color.fromRGBO(249, 168, 38, 1)
-              ]
-            ),
-            image: DecorationImage(
-              image: AssetImage("assets/images/social_geek_logo.png")
-            )
-          ),
-        ),*/
 
