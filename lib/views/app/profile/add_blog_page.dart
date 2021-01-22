@@ -28,90 +28,96 @@ class ProfileSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var userViewModel = Provider.of<UserViewModel>(context);
+    FocusNode focusNode = FocusNode();
     SizeConfig().init(context);
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                color: darkBackgroundColor,
-                border: Border.all(color: Colors.blueGrey, width: 0.4),
-                borderRadius: BorderRadius.all(Radius.circular(75))),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: SizeConfig.safeBlockHorizontal * 25,
-                  height: SizeConfig.safeBlockVertical * 25,
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: NetworkImage(userViewModel.userModel.profileURL),
+      child: GestureDetector(
+        onTap: () => focusNode.unfocus(),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: darkBackgroundColor,
+                  border: Border.all(color: Colors.blueGrey, width: 0.4),
+                  borderRadius: BorderRadius.all(Radius.circular(75))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    width: SizeConfig.safeBlockHorizontal * 25,
+                    height: SizeConfig.safeBlockVertical * 25,
+                    decoration: BoxDecoration(
+                      color: backgroundColor,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(userViewModel.userModel.profileURL),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: secondColor.withOpacity(0.5),
+                          blurRadius: 30,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: secondColor.withOpacity(0.5),
-                        blurRadius: 30,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
                   ),
-                ),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      RoundedInputField(
-                        readOnly: true,
-                        icon: Icons.person_pin,
-                        iconColor: mainColor,
-                        cursorColor: mainColor,
-                        hintText: "User Name",
-                        onSaved: (value) {
-                          userName = value;
-                        },
-                        errorText:  null,
-                        initialText: userViewModel.userModel.userName,
-                      ),
-                      RoundedInputField(
-                        icon: Icons.title,
-                        iconColor: mainColor,
-                        cursorColor: mainColor,
-                        hintText: "Başlık",
-                        onSaved: (value) {
-                          title = value;
-                        },
-                        errorText: null,
-                      ),
-                      RoundedInputField(
-                        maxLines: null,
-                        textInputType: TextInputType.multiline,
-                        icon: Icons.article,
-                        iconColor: mainColor,
-                        cursorColor: mainColor,
-                        hintText: "Makale",
-                        onSaved: (value) {
-                          article = value;
-                        },
-                        errorText: null,
-                      ),
-                    ],
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        RoundedInputField(
+                          readOnly: true,
+                          icon: Icons.person_pin,
+                          iconColor: mainColor,
+                          cursorColor: mainColor,
+                          hintText: "User Name",
+                          onSaved: (value) {
+                            userName = value;
+                          },
+                          errorText:  null,
+                          initialText: userViewModel.userModel.userName,
+                        ),
+                        RoundedInputField(
+                          focusNode: focusNode,
+                          icon: Icons.title,
+                          iconColor: mainColor,
+                          cursorColor: mainColor,
+                          hintText: "Başlık",
+                          onSaved: (value) {
+                            title = value;
+                          },
+                          errorText: null,
+                        ),
+                        RoundedInputField(
+                          focusNode: focusNode,
+                          maxLines: null,
+                          textInputType: TextInputType.multiline,
+                          icon: Icons.article,
+                          iconColor: mainColor,
+                          cursorColor: mainColor,
+                          hintText: "Makale",
+                          onSaved: (value) {
+                            article = value;
+                          },
+                          errorText: null,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          RoundedButton(
-              text: "MAKALE EKLE",
-              color: backgroundColor,
-              press: () {
-                saveBlogPost(context);
-              }
-          ),
-        ],
+            RoundedButton(
+                text: "MAKALE EKLE",
+                color: backgroundColor,
+                press: () {
+                  saveBlogPost(context);
+                }
+            ),
+          ],
+        ),
       ),
     );
   }

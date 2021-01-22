@@ -5,6 +5,7 @@ import 'package:social_geek/services/auth/firebase_auth_service.dart';
 import 'package:social_geek/services/database/firestore_db_service.dart';
 import 'package:social_geek/services/notification/notification_service.dart';
 import 'package:social_geek/services/storage/firebase_storage_service.dart';
+import 'package:social_geek/view_models/search_view_model.dart';
 
 GetIt locator = GetIt.instance;
 
@@ -15,4 +16,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => FirestoreDbService());
   locator.registerLazySingleton(() => FirebaseStorageService());
   locator.registerLazySingleton(() => NotificationService());
+
+  locator.registerFactory(() => SearchViewModel());
 }

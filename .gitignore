@@ -39,5 +39,5 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
-lib/private_key.dart
 android/app/google-services.json
+lib/private_key.dart

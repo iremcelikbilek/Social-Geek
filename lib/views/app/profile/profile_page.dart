@@ -58,7 +58,7 @@ class _CustomSocialHeaderState extends State<CustomSocialHeader> {
     var userViewModel = Provider.of<UserViewModel>(context);
     SizeConfig().init(context);
     return Container(
-      height: SizeConfig.safeBlockVertical * 50,
+      height: SizeConfig.safeBlockVertical * 55,
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
           color: Colors.white38,
@@ -82,17 +82,18 @@ class _CustomSocialHeaderState extends State<CustomSocialHeader> {
             ],
           ),
           Container(
-            width: SizeConfig.safeBlockHorizontal * 40,
+            width: SizeConfig.safeBlockHorizontal * 45,
             height: SizeConfig.safeBlockVertical * 30,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
+                fit: BoxFit.cover,
                 image: NetworkImage(userViewModel.userModel.profileURL),
               ),
               boxShadow: [
                 BoxShadow(
                   color: secondColor,
-                  blurRadius: 40,
+                  blurRadius: 45,
                   offset: Offset(0, 10),
                 ),
               ],

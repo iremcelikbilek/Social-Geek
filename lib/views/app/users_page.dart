@@ -10,14 +10,20 @@ import 'package:social_geek/views/app/chat_page.dart';
 import 'package:social_geek/views/app/educator_page.dart';
 import 'package:social_geek/views/app/profile/other_user_profile_page.dart';
 import 'package:social_geek/views/app/profile/profile_page.dart';
-import 'package:social_geek/views/app/profile/settings_page.dart';
+import 'package:social_geek/views/app/search_page.dart';
+
 
 class UsersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Image.asset('assets/images/social_geek_logo.png', width: 50,height: 50,),),),
+        title: Center(child: Image.asset('assets/images/social_geek_logo.png', width: 50,height: 50,),),
+      actions: [
+        IconButton(icon: Icon(Icons.search_rounded), onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchPage(),),);
+        })
+      ],),
       body: InstaHome(),
     );
   }

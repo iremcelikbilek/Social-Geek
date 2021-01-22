@@ -13,9 +13,11 @@ class RoundedInputField extends StatelessWidget {
   final bool readOnly;
   final TextInputType textInputType;
   final ValueChanged<String> onSaved;
+  final FocusNode focusNode;
   const RoundedInputField({
     Key key,
     @required this.hintText,
+    this.focusNode,
     this.readOnly = false,
     this.maxLines = 1,
     this.textInputType = TextInputType.emailAddress,
@@ -31,6 +33,7 @@ class RoundedInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextFormField(
+        focusNode: focusNode,
         readOnly: readOnly,
         maxLines: maxLines,
         initialValue: initialText,

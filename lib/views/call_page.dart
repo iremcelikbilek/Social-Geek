@@ -101,7 +101,7 @@ class _CallPageState extends State<CallPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agora Group Calling'),
+        title: Text('Görüntülü Arama'),
       ),
       backgroundColor: Colors.black,
       body: Center(

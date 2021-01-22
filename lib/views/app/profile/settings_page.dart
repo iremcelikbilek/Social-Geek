@@ -35,6 +35,7 @@ class ProfileSettings extends StatefulWidget {
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   final _formKey = GlobalKey<FormState>();
+  FocusNode _focusNode;
 
   String userName, eMail, aboutMe;
 
@@ -45,6 +46,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   void initState() {
     super.initState();
     selectedSubject = subjects[0];
+    _focusNode = FocusNode();
   }
 
   @override
@@ -53,113 +55,118 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     var settingsViewModel = Provider.of<SettingsViewModel>(context);
     SizeConfig().init(context);
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                color: backgroundColor,
-                border: Border.all(color: Colors.blueGrey, width: 0.4),
-                borderRadius: BorderRadius.all(Radius.circular(75))),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      width: SizeConfig.safeBlockHorizontal * 25,
-                      height: SizeConfig.safeBlockVertical * 25,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: (settingsViewModel.profilePhoto != null) ?FileImage(settingsViewModel.profilePhoto):NetworkImage(userViewModel.userModel.profileURL),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: secondColor.withOpacity(0.5),
-                            blurRadius: 30,
-                            offset: Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                        bottom: SizeConfig.safeBlockVertical * 4,
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.add_circle,
-                              color: mainColor,
-                              size: 35,
-                            ),
-                            onPressed: (){
-                              settingModalBottomSheet(context);
-                            }),),
-                  ],
-                ),
-                Form(
-                  key: _formKey,
-                  child: Column(
+      child: GestureDetector(
+        onTap: () => _focusNode.unfocus(),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: backgroundColor,
+                  border: Border.all(color: Colors.blueGrey, width: 0.4),
+                  borderRadius: BorderRadius.all(Radius.circular(75))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Stack(
+                    alignment: Alignment.bottomRight,
                     children: [
-                      RoundedInputField(
-                        readOnly: true,
-                        icon: Icons.email,
-                        iconColor: mainColor,
-                        cursorColor: secondColor,
-                        hintText: "email",
-                        onSaved: (value) {
-                          eMail = value;
-                        },
-                        errorText:  null,
-                        initialText: userViewModel.userModel.eMail,
+                      Container(
+                        width: SizeConfig.safeBlockHorizontal * 25,
+                        height: SizeConfig.safeBlockVertical * 25,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: (settingsViewModel.profilePhoto != null) ?FileImage(settingsViewModel.profilePhoto):NetworkImage(userViewModel.userModel.profileURL),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: secondColor.withOpacity(0.5),
+                              blurRadius: 30,
+                              offset: Offset(0, 5),
+                            ),
+                          ],
+                        ),
                       ),
-                      RoundedInputField(
-                        iconColor: mainColor,
-                        cursorColor: secondColor,
-                        hintText: "Kullanıcı Adı",
-                        onSaved: (value) {
-                          userName = value;
-                        },
-                        errorText: (settingsViewModel.errorText != null) ? settingsViewModel.errorText : null,
-                        initialText: userViewModel.userModel.userName,
-                      ),
-                      RoundedInputField(
-                        maxLines: null,
-                        textInputType: TextInputType.multiline,
-                        icon: Icons.info,
-                        iconColor: mainColor,
-                        cursorColor: secondColor,
-                        hintText: "Hakkımda",
-                        onSaved: (value) {
-                          aboutMe = value;
-                        },
-                        errorText: null,
-                        initialText: userViewModel.userModel.aboutMe,
-                      ),
+                      Positioned(
+                          bottom: SizeConfig.safeBlockVertical * 4,
+                          child: IconButton(
+                              icon: Icon(
+                                Icons.add_circle,
+                                color: mainColor,
+                                size: 35,
+                              ),
+                              onPressed: (){
+                                settingModalBottomSheet(context);
+                              }),),
                     ],
                   ),
-                ),
-              ],
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        RoundedInputField(
+                          readOnly: true,
+                          icon: Icons.email,
+                          iconColor: mainColor,
+                          cursorColor: secondColor,
+                          hintText: "email",
+                          onSaved: (value) {
+                            eMail = value;
+                          },
+                          errorText:  null,
+                          initialText: userViewModel.userModel.eMail,
+                        ),
+                        RoundedInputField(
+                          focusNode: _focusNode,
+                          iconColor: mainColor,
+                          cursorColor: secondColor,
+                          hintText: "Kullanıcı Adı",
+                          onSaved: (value) {
+                            userName = value;
+                          },
+                          errorText: (settingsViewModel.errorText != null) ? settingsViewModel.errorText : null,
+                          initialText: userViewModel.userModel.userName,
+                        ),
+                        RoundedInputField(
+                          focusNode: _focusNode,
+                          maxLines: null,
+                          textInputType: TextInputType.multiline,
+                          icon: Icons.info,
+                          iconColor: mainColor,
+                          cursorColor: secondColor,
+                          hintText: "Hakkımda",
+                          onSaved: (value) {
+                            aboutMe = value;
+                          },
+                          errorText: null,
+                          initialText: userViewModel.userModel.aboutMe,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          RoundedButton(
-            text: "GÜNCELLE",
-            color: backgroundColor,
-            press: () {
-              _updateUserName(context);
-              _updateProfilePhoto(context);
-              _updateAboutMe(context);
-            }
-          ),
-          RoundedButton(
-              text: "EĞİTMEN OLMAK İSTİYORUM",
+            RoundedButton(
+              text: "GÜNCELLE",
               color: backgroundColor,
               press: () {
-                  getDialog(context);
+                _updateUserName(context);
+                _updateProfilePhoto(context);
+                _updateAboutMe(context);
               }
-          ),
-        ],
+            ),
+            RoundedButton(
+                text: "EĞİTMEN OLMAK İSTİYORUM",
+                color: backgroundColor,
+                press: () {
+                    getDialog(context);
+                }
+            ),
+          ],
+        ),
       ),
     );
   }

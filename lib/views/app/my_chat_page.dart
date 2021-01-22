@@ -15,6 +15,7 @@ class MyChatPage extends StatefulWidget {
 }
 
 class _MyChatPageState extends State<MyChatPage> {
+
   @override
   Widget build(BuildContext context) {
     var _userViewModel = Provider.of<UserViewModel>(context);
@@ -72,7 +73,7 @@ class _MyChatPageState extends State<MyChatPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.chat,size: 50,color: Theme.of(context).primaryColor,),
+                      Icon(Icons.chat,size: 50,color: Colors.white,),
                       Text("Henüz Konuşmanız Yok",style: TextStyle(fontSize: 20),),
                     ],
                   ),

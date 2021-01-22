@@ -22,11 +22,19 @@ class _ChatPageState extends State<ChatPage> {
   ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
   final PermissionHandler _permissionHandler = PermissionHandler();
+  FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,12 +60,15 @@ class _ChatPageState extends State<ChatPage> {
           : Center(
         child: Container(
           color: backgroundColor,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              buildMessageListArea(),
-              buildNewMessageSendArea(),
-            ],
+          child: GestureDetector(
+            onTap: () => _focusNode.unfocus(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildMessageListArea(),
+                buildNewMessageSendArea(),
+              ],
+            ),
           ),
         ),
       ),
@@ -90,6 +101,7 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: TextField(
+              focusNode: _focusNode,
               maxLines: null,
               textInputAction: TextInputAction.newline,
               controller: _messageController,
