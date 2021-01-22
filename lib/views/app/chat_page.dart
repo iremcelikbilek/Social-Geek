@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:social_geek/constant.dart';
 import 'package:social_geek/models/chat.dart';
 import 'package:social_geek/view_models/chat_view_model.dart';
 import 'package:social_geek/views/app/profile/profile_page.dart';
+import 'package:social_geek/views/call_page.dart';
 
 
 class ChatPage extends StatefulWidget {
@@ -19,6 +21,7 @@ class _ChatPageState extends State<ChatPage> {
   TextEditingController _messageController = TextEditingController();
   ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
+  final PermissionHandler _permissionHandler = PermissionHandler();
 
   @override
   void initState() {
@@ -32,6 +35,17 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(chatViewModel.typedUser.userName),
+        actions: [
+          IconButton(icon: Icon(Icons.video_call),onPressed: () async{
+
+            await _permissionHandler.requestPermissions([PermissionGroup.camera, PermissionGroup.microphone]);
+
+            Navigator.push(context,
+                MaterialPageRoute(
+                  builder: (context)=> CallPage(),)
+            );
+          },)
+        ],
       ),
       body: (chatViewModel.chatViewState == ChatViewState.Busy)
           ? _waitForNewUserList()
